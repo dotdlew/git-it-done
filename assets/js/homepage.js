@@ -69,7 +69,7 @@ function formSubmitHandler(event) {
 
 function getUserRepos(user) {
     // format the github api url
-    var apiUrl = "https://api.github.com/users/" + user + "/repos";
+    var apiUrl = "444://api.github.com/users/" + user + "/repos";
 
     // make a request to the url
     fetch(apiUrl)
@@ -84,7 +84,7 @@ function getUserRepos(user) {
             }
         })
         .catch(function (error) {
-            alert("Unable to connect to GitHub")
+            console.log(error)
         });
 };
 
