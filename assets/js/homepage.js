@@ -4,6 +4,12 @@ var repoContainerEl = document.querySelector('#repo-containter')
 var repoSearchTerm = document.querySelector('#repo-search-term')
 
 function displayRepos(repos, searchTerm) {
+    // check if api returned any repos
+    if (repos.length === 0) {
+        repoContainerEl.textContent = "No repositories found.";
+        return;
+    }
+
     // clear old content
     repoContainerEl.textContent = "";
     repoSearchTerm.textContent = searchTerm;
@@ -29,19 +35,19 @@ function displayRepos(repos, searchTerm) {
         statusEl.classList = "flex-row align-center";
 
         // check if the repo has any issues
-        if (repos[i].open_issues_count > 0){
-            statusEl.innerHTML = 
-            "<i class='fas fa-times status-icon icon-danger'></i>" + repos[i].open_issues_count + " issue(s)";
+        if (repos[i].open_issues_count > 0) {
+            statusEl.innerHTML =
+                "<i class='fas fa-times status-icon icon-danger'></i>" + repos[i].open_issues_count + " issue(s)";
         } else {
             statusEl.innerHTML = "<i class='fas fa-check-square status-icon icon-success'></i>";
         }
 
         repoEl.appendChild(statusEl);
-        
+
         // append container to the dom
         repoContainerEl.appendChild(repoEl);
 
-    }    
+    }
 
     console.log(repos);
     console.log(searchTerm);
@@ -66,11 +72,20 @@ function getUserRepos(user) {
     var apiUrl = "https://api.github.com/users/" + user + "/repos";
 
     // make a request to the url
-    fetch(apiUrl).then(function (response) {
-        response.json().then(function (data) {
-            displayRepos(data, user);
+    fetch(apiUrl)
+        .then(function (response) {
+            // request was successful
+            if (response.ok) {
+                response.json().then(function (data) {
+                    displayRepos(data, user);
+                });
+            } else {
+                alert("Error: " + response.statusText);
+            }
+        })
+        .catch(function (error) {
+            alert("Unable to connect to GitHub")
         });
-    });
 };
 
 userFormEl.addEventListener("submit", formSubmitHandler);
